@@ -1,0 +1,296 @@
+{% extends "layout_main.html" %}
+{% block content %}
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+
+<div class="site-section">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <!-- Main content -->
+         <section class="content">
+           <div class="container-fluid">
+             <div class="row">
+               <div class="col-md-12">
+                 <div class="card card-warning">
+                   <div class="card-header">
+                      <h3 class="card-title text-bold">World Indices</h3>
+
+                      <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                          <i class="fas fa-minus"></i></button>
+                      </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body table-responsive p-2" style="height: 500px;">
+                      <table class="table table-bordered p-0" id="DTIndexData">
+                        <thead>
+                          <tr style="text-align:center;">
+                            <th>Index</th>
+                            <th>Country</th>
+                            <th>Date</th>
+                            <th>Open</th>
+                            <th>Close</th>
+                            <th>% Change</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for rows in indices_data %}
+                            <tr>
+                              {% if rows[8] < 0 %}
+                                <td><span class="badge bg-danger">{{rows[1]}}</span></td>
+                              {% else %}
+                                <td>{{rows[1]}}</td>
+                              {% endif %}
+                              <td>{{rows[0]}}</td>
+                              <td>{{rows[2]}}</td>
+                              {% if rows[8] < 0 %}
+                                <td style="text-align:center;"><span class="badge bg-danger" style="width:8em;">{{rows[5]}}</span></td>
+                                <td style="text-align:center;"><span class="badge bg-danger" style="width:8em;">{{rows[6]}}</span></td>
+                                <td style="text-align:center;"><span class="badge bg-danger" style="width:7em;">{{rows[8]}}%</span></td>
+                              {% else %}
+                                <td style="text-align:center;"><span class="badge bg-success" style="width:8em;">{{rows[5]}}</span></td>
+                                <td style="text-align:center;"><span class="badge bg-success" style="width:8em;">{{rows[6]}}</span></td>
+                                <td style="text-align:center;"><span class="badge bg-success" style="width:7em;">{{rows[8]}}%</span></td>
+                              {% endif %}
+                            </tr>
+                          {% endfor %}
+
+                        </tbody>
+                      </table>
+                    </div>
+
+                 </div>
+               </div>
+             </div>
+           </div>
+         </section>
+      </div>
+   </div>
+  </div>
+</div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+
+<div class="site-section">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <!-- Main content -->
+         <section class="content">
+           <div class="container-fluid">
+             <div class="row">
+               <div class="col-md-12">
+                 <div class="card card-warning">
+                   <div class="card-header">
+                      <h3 class="card-title text-bold">Daily Twitter Sentiment Report</h3>
+
+                      <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                          <i class="fas fa-minus"></i></button>
+                      </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                      <div class="chart" id="bargraph">
+                        <script>
+                            var graphs = {{plot | safe}};
+                            Plotly.plot('bargraph',graphs,{});
+                        </script>
+                      </div>
+                    </div>
+                 </div>
+               </div>
+             </div>
+           </div>
+         </section>
+      </div>
+   </div>
+  </div>
+</div>
+
+<div class="site-section">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <!-- Main content -->
+         <section class="content">
+           <div class="container-fluid">
+             <div class="row">
+               <div class="col-md-12">
+                 <div class="card card-warning">
+                   <div class="card-header">
+                      <h3 class="card-title text-bold">Daily News Sentiment Report</h3>
+
+                      <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                          <i class="fas fa-minus"></i></button>
+                      </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                      <div class="chart" id="newsbargraph">
+                        <script>
+                            var graphs = {{plot | safe}};
+                            Plotly.plot('bargraph',graphs,{});
+                        </script>
+                      </div>
+                    </div>
+                 </div>
+               </div>
+             </div>
+           </div>
+         </section>
+      </div>
+   </div>
+  </div>
+</div>
+
+<div class="site-section">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <!-- Main content -->
+         <section class="content">
+           <div class="container-fluid">
+             <div class="row">
+               <div class="col-md-12">
+                 <div class="card card-warning">
+                   <div class="card-header">
+                      <h3 class="card-title text-bold">Daily News Sentiment Vs World Indices</h3>
+
+                      <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                          <i class="fas fa-minus"></i></button>
+                      </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                      <div class="chart" id="newsvsindicesbargraph">
+                        <script>
+                            var graphs = {{plot | safe}};
+                            Plotly.plot('bargraph',graphs,{});
+                        </script>
+                      </div>
+                    </div>
+                 </div>
+               </div>
+             </div>
+           </div>
+         </section>
+      </div>
+   </div>
+  </div>
+</div>
+
+
+<div class="site-section">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <!-- Main content -->
+         <section class="content">
+           <div class="container-fluid">
+             <div class="row">
+               <div class="col-md-12">
+                 <div class="card card-warning">
+                   <div class="card-header">
+                      <h3 class="card-title text-bold">Daily Twitter Sentiment Vs World Indices</h3>
+
+                      <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                          <i class="fas fa-minus"></i></button>
+                      </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                      <div class="chart" id="twittervsindicesbargraph">
+                        <script>
+                            var graphs = {{plot | safe}};
+                            Plotly.plot('bargraph',graphs,{});
+                        </script>
+                      </div>
+                    </div>
+                 </div>
+               </div>
+             </div>
+           </div>
+         </section>
+      </div>
+   </div>
+  </div>
+</div>
+
+
+ <script src="/static/js/jquery-1.11.1.min.js"></script>
+ <script src="/static/js/plots.js"></script>
+
+ <script type="text/javascript">
+     $(function () {
+         $.ajax({
+             url: "/twitter_daily_sentiment_plot",
+             type: "GET",
+             contentType: 'application/json;charset=UTF-8',
+             data: {
+                 'selected': 'Bar'
+             },
+             dataType:"json",
+             success: function (data) {
+                 Plotly.newPlot('bargraph', data );
+             }
+         });
+     });
+
+     $(function () {
+         $.ajax({
+             url: "/news_daily_sentiment_plot",
+             type: "GET",
+             contentType: 'application/json;charset=UTF-8',
+             data: {
+                 'selected': 'Bar'
+             },
+             dataType:"json",
+             success: function (data) {
+                 Plotly.newPlot('newsbargraph', data );
+             }
+         });
+     });
+
+     $(function () {
+         $.ajax({
+             url: "/get_indices_vs_sentiment_plot",
+             type: "GET",
+             contentType: 'application/json;charset=UTF-8',
+             data: {
+                 'selected': 'Bar'
+             },
+             dataType:"json",
+             success: function (data) {
+                 Plotly.newPlot('newsvsindicesbargraph', data );
+             }
+         });
+     });
+
+     $(function () {
+         $.ajax({
+             url: "/get_indices_vs_twitter_sentiment_plot",
+             type: "GET",
+             contentType: 'application/json;charset=UTF-8',
+             data: {
+                 'selected': 'Bar'
+             },
+             dataType:"json",
+             success: function (data) {
+                 Plotly.newPlot('twittervsindicesbargraph', data );
+             }
+         });
+     });
+ </script>
+{% endblock %}

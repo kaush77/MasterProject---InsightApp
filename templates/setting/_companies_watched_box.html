@@ -1,0 +1,119 @@
+{% extends "layout_main.html" %}
+{% block content %}
+
+<div class="site-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card card-warning card-outline">
+          <div class="card-header">
+             <h3 class="card-title text-info text-bold">Setup Companies Watch List</h3>
+             <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+              </div>
+          </div>
+          <div class="card-body">
+            <p class="card-text">
+              <div>
+                 <p style="text-align:left;">Add Company Ticker or Company Name</p>
+                  <form action="{{ url_for('add_companies_watched_box') }}" method="post">
+                    <div class="form-group row">
+                      <div class="col-md-10 mb-6 mb-lg-0">
+                        <div class="form-group row">
+                          <div class="col-md-12">
+                            <input type="text" name="autocomplete" class="form-control" placeholder="Please enter details 'Microsoft Corporation or MSFT'" id="autocomplete" required>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-md-12">
+                            <textarea name="search_criteria" id="search_criteria" class="form-control" placeholder="Enter search criteria by comma separated like iphone, iphone profit high." cols="30" rows="5"></textarea>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-md-12">
+                            <div class="msg">{{ msg }}</div>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-md-6 mr-auto">
+                            <input type="submit" class="btn btn-block btn-warning rounded-0" value="Add Details">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-2"> </div>
+                    </div>
+                  </form>
+              </div>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-md-12">
+      <!-- TABLE: LATEST ORDERS -->
+          <div class="card card-warning card-outline">
+            <div class="card-header">
+              <h3 class="card-title text-info text-bold">Mapped Companies Watch List</h3>
+
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                  <i class="fas fa-minus"></i>
+                </button>
+                <!-- <button type="button" class="btn btn-tool" data-card-widget="remove">
+                  <i class="fas fa-times"></i>
+                </button> -->
+              </div>
+            </div>
+            <!-- /.card-header -->
+
+            <div class="card-body">
+              <form action="{{ url_for('update_companies_watched_box') }}" method="post">
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped" id="DTMonitorSite">
+                  <thead>
+                      <tr>
+                          <th>Delete</th>
+                          <th>Exchange</th>
+                          <th>Country</th>
+                          <th>symbol</th>
+                          <th>Name</th>
+                          <th>Lookup Criteria</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                    {% for row in data_records %}
+                       <tr>
+                         <td><input type="checkbox" id="id_{{row[0]}}" name="monitor_companies_id" value="{{row[0]}}" ></td>
+                         <td>{{ row[1] }}</td>
+                         <td>{{ row[2] }}</td>
+                         <td>{{ row[3] }}</td>
+                         <td>{{ row[4] }}</td>
+                         <td>{{ row[5] }}</td>
+                       </tr>
+                     {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.table-responsive -->
+
+                <div class="card-footer clearfix">
+                  <input type="submit" class="btn btn-warning rounded-0 float-left" value="Delete Mapping">
+                  <div class="text-danger float-right msg">{{ msg }}</div>
+                </div>
+                <!-- /.card-footer -->
+              </form>
+            </div>
+          </div>
+          <!-- /.card -->
+      </div>
+    </div>
+
+   </div>
+ </div>
+
+{% endblock %}

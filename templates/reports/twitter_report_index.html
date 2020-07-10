@@ -1,0 +1,222 @@
+{% extends "layout_main.html" %}
+{% import "reports/_macros.html" as macros %}
+{% block content %}
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+<link rel="stylesheet" href="/static/css/select2.min.css">
+<link rel="stylesheet" href="/static/css/select2-bootstrap4.min.css">
+
+<!-- Main content -->
+
+<section class="content">
+    <div class="container-fluid">
+        <!-- Info boxes -->
+        <div class="row">
+            <div class="col-md-12">
+              <div class="card card-warning card-outline">
+                  <div class="card-header">
+                      <h3 class="card-title text-info text-bold">
+                        <i class="ion ion-clipboard mr-1"></i> Twitter Tweets
+                      </h3>
+                      <div class="card-tools">
+                        <div class="btn-group" data-toggle="btn-toggle">
+                          <form action="{{ url_for('twitter_report_index') }}" method="POST">
+                              <input type="hidden" id="click_button_id" name="click_button_id" value="2"/>
+                              <button type="submit" name="all_news" class="btn btn-default btn-sm" id="all_news" onclick="return SetButtonClickValue(2)" title="all tweets"><i class="fa fa-square text-gray"></i></button>
+                              <button type="submit" name="pos_news" class="btn btn-default btn-sm" id="pos_news" onclick="return SetButtonClickValue(1)" title="only positive tweets"><i class="fa fa-square text-green"></i></button>
+                              <button type="submit" name="neg_news" class="btn btn-default btn-sm" id="neg_news" onclick="return SetButtonClickValue(0)" title="only negative tweets"><i class="fa fa-square text-red"></i></button>
+                          </form>
+                          <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
+                          <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                       </div>
+                      </div>
+                   </div>
+                   <div class="card-body table-responsive p-0" style="height: 500px;">
+                     <ul class="todo-list" data-widget="todo-list" id="tweet_news_section">
+
+                       {% for rows in twitter_news_records %}
+                         {% if rows[4] == 0 %}
+                            <li style="border-color: #dc3545;">
+                         {% elif rows[4] == 1 %}
+                            <li style="border-color: #28a745">
+                         {% else %}
+                            <li style="border-color: #ffc107">
+                         {% endif%}
+                            <!-- drag handle -->
+                            <!-- checkbox -->
+                            <div  class="icheck-primary d-inline">
+                              <label for="todoCheck1">@ <span id="screen_id">{{rows[1]}}</span></label>
+                              <label for="todoCheck1">{{rows[2]}}</label>
+                            </div>
+                            <!-- todo text -->
+                            <span class="text">&nbsp;</span>
+                            <!-- Emphasis label -->
+                            {% if rows[4] == 0 %}
+                               <small class="badge badge-danger float-right">{{rows[4]}}</small>
+                            {% elif rows[4] == 1 %}
+                                  <small class="badge badge-success float-right">{{rows[4]}}</small>
+                            {% else %}
+                               <small class="badge badge-warning float-right">{{rows[4]}}</small>
+                            {% endif%}
+
+                            <!-- General tools such as edit or delete-->
+                            <br/>
+                            <div class="icheck-primary d-inline">
+                             {{rows[3]}}
+                            </div>
+                          </li>
+                       {% endfor %}
+
+                     </ul>
+                   </div>
+
+                   <div class="card-footer clearfix">
+                     {{ macros.pagination_widget(pages, 'index') }}
+                   </div>
+                   <div class="clearfix" style="text-align:center;">
+                     <div class="btn-danger float-right msg" style="width: 100%;">{{ msg }}</div>
+                   </div>
+                   {% if twitter_news_records != null %}
+                      <input type="hidden" name="last_date_id" id="last_date_id" value="{{twitter_news_records[0][2]}}">
+                   {% endif %}
+              </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <!-- Info boxes -->
+        <div class="row">
+            <div class="col-md-12">
+              <div class="card card-warning card-outline">
+                  <div class="card-header">
+                      <h3 class="card-title text-info text-bold">
+                        <i class="ion ion-clipboard mr-1"></i> Twitter Sentiment Plot
+                      </h3>
+                      <div class="card-tools">
+                        <div class="btn-group" data-toggle="btn-toggle">
+                          <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
+                          <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                       </div>
+                      </div>
+                   </div>
+                   <div class="card-body table-responsive p-0" style="height: 578px;">
+                     <div class="container">
+                       <div class="col-md-6">
+                           <label> Choose the plot type....</label>
+                           <select class="select2bs4" style="width: 100%;" id ='plot_change_id'>
+                               <option value="Pie">Pie</option>
+                               <option value="Bar">Bar</option>
+                               <!-- <option value="Scatter">Scatter</option> -->
+                           </select>
+                       </div>
+
+                       <div class="chart" id="bargraph">
+                         <script>
+                             var graphs = {{plot | safe}};
+                             Plotly.plot('bargraph',graphs,{});
+                         </script>
+                       </div>
+                     </div>
+
+                   </div>
+
+              </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+ <script>
+
+      function SetButtonClickValue(obj)
+      {
+        $("#click_button_id").val(obj);
+        return true;
+      }
+
+      function check(){
+        last_record_id = $("#last_date_id").val()
+
+        $.ajax({
+            url: '{{ url_for("twitter_report_update") }}',
+    				data: {last_record_id:last_record_id}
+            }).done(function (data) {
+                var html_li_tag = ""
+                for (var i = 0; i < data.json_list.length; i++) {
+
+                  if(data.json_list[i][4] == 0){
+                    html_li_tag = html_li_tag + '<li style="border-color: #dc3545;">'
+                  }
+                  else{
+                    html_li_tag = html_li_tag + '<li style="border-color: #28a745">'
+                  }
+
+                  html_li_tag = html_li_tag + "<div  class='icheck-primary d-inline'>"
+                  html_li_tag = html_li_tag + "<label for='todoCheck1'>@ <span id='screen_id'>" + data.json_list[i][1] +"</span></label>"
+                  html_li_tag = html_li_tag + "<label for='todoCheck1'>" + data.json_list[i][2] + "</label>"
+                  html_li_tag = html_li_tag + "</div>"
+
+                  html_li_tag = html_li_tag + "<span class='text'>&nbsp;</span>"
+
+                  if(data.json_list[i][4] == 0){
+                    html_li_tag = html_li_tag + "<small class='badge badge-danger float-right'> " + data.json_list[i][4] + "</small>"
+                  }
+                  else{
+                    html_li_tag = html_li_tag + "<small class='badge badge-success float-right'> " + data.json_list[i][4] + "</small>"
+                  }
+
+                  html_li_tag = html_li_tag + "<br/>"
+
+                  html_li_tag = html_li_tag + "<div class='icheck-primary d-inline'>"
+                  html_li_tag = html_li_tag + data.json_list[i][3]
+                  html_li_tag = html_li_tag + "</div>"
+
+                  html_li_tag = html_li_tag + "</li>"
+
+                  $('#tweet_news_section li:eq(0)').before(html_li_tag);
+
+                  // set new value
+                  $("#last_date_id").val(data.json_list[i][2])
+                }
+            });
+      };
+
+      setInterval(check,60000);
+ </script>
+
+ <script src="/static/js/jquery-1.11.1.min.js"></script>
+ <script src="/static/js/plots.js"></script>
+
+<script type="text/javascript">
+    $(function () {
+        //Initialize Select2 Elements
+          $('.select2').select2()
+
+          //Initialize Select2 Elements
+          $('.select2bs4').select2({
+            theme: 'bootstrap4'
+          })
+
+          $('#plot_change_id').on('select2:select', function (e) {
+              $.ajax({
+                  url: "/twitter_plot",
+                  type: "GET",
+                  contentType: 'application/json;charset=UTF-8',
+                  data: {
+                      'selected': document.getElementById('plot_change_id').value
+                  },
+                  dataType:"json",
+                  success: function (data) {
+                      Plotly.newPlot('bargraph', data );
+                  }
+              });
+          });
+    });
+</script>
+
+{% endblock %}

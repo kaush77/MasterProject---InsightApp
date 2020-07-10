@@ -1,0 +1,98 @@
+{% extends "layout_main.html" %}
+{% block content %}
+
+<div class="site-section">
+  <div class="container">
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card card-warning card-outline">
+          <div class="card-header">
+             <h3 class="card-title text-info text-bold">Setup Twitter Profile</h3>
+             <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+              </div>
+          </div>
+          <div class="card-body">
+            <p class="card-text">
+              <div>
+                 <p style="text-align:left;">Add Twitter Account To Track</p>
+                 <form action="{{ url_for('add_twitter_account') }}" method="post">
+                   <div class="form-group row">
+                     <div class="col-md-8 mb-6 mb-lg-0">
+                       <input type="text" name="twitter_account" class="form-control" placeholder="Enter screen id like 'narendramodi'" id="twitter_account" required>
+                     </div>
+                     <div class="col-md-4">
+                       <input type="submit" class="btn btn-block btn-warning rounded-0" value="Add Account">
+                     </div>
+                   </div>
+                 </form>
+              </div>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+      <!-- TABLE: LATEST ORDERS -->
+          <div class="card card-warning card-outline">
+            <div class="card-header">
+              <h3 class="card-title text-info text-bold">Add Twitter Account To Track</h3>
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                  <i class="fas fa-minus"></i>
+                </button>
+              </div>
+            </div>
+            <!-- /.card-header -->
+
+            <div class="card-body">
+              <form action="{{ url_for('map_user_twitter_list') }}" method="post">
+                <div class="table-responsive">
+                  <table class="table table-bordered table-striped" id="DTTwiter">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Screen Id</th>
+                            <th>Screen Name</th>
+                            <th>Country</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                      {% for row in twitter_records %}
+                         <tr>
+                           {% if row[4]  %}
+                              <td><input type="checkbox" id="id_{{row[0]}}" name="twitter_screen_id" value="{{row[0]}}" checked></td>
+                           {% else %}
+                              <td><input type="checkbox" id="id_{{row[0]}}" name="twitter_screen_id" value="{{row[0]}}" ></td>
+                           {% endif %}
+                           <td>{{ row[1] }}</td>
+                           <td>{{ row[2] }}</td>
+                           <td>{{ row[3] }}</td>
+                         </tr>
+                       {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+                <!-- /.table-responsive -->
+
+                <div class="card-footer clearfix">
+                  <input type="submit" class="btn btn-warning rounded-0 float-left" value="Map Account">
+                  <div class="text-danger float-right msg">{{ msg }}</div>
+                </div>
+                <!-- /.card-footer -->
+              </form>
+            </div>
+          </div>
+          <!-- /.card -->
+      </div>
+    </div>
+
+ </div>
+</div>
+
+{% endblock %}

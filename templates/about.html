@@ -1,0 +1,57 @@
+{% extends "layout_main.html" %}
+{% block content %}
+
+<div class="site-section">
+  <div class="container">
+    <div class="row">
+
+      <div class="col-lg-4 mb-5">
+        <div class="card card-warning card-outline">
+          <div class="card-header">
+            <h3 class="card-title text-info text-bold">
+               About Website
+            </h3> 
+          </div>
+          <div class="card-body">
+            <p class="card-text">
+              <p>We provide an online web app with the daily sentiment analysis of Financial news articles and Twitter sentiment of tweets capture from an essential figure in the political and business industries.</p>
+              <p>We also provide daily sentiment plots of twitter data and Financial news articles, including comparison plots of popular world indices.</p>
+              <p>These are essential website features to capture the world market movement.  The features are useful to help an investor in their investment decision planning.</p>
+
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-8 mb-5">
+        <div class="card card-warning card-outline">
+          <div class="card-body">
+            <p class="card-text">
+                <img src="{{ url_for('static', filename='images/img_n7.png') }}" alt="Image" class="img-fluid">
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <div class="site-section bg-light">
+        <div class="container">
+          <div class="row align-items-stretch">
+            <div class="col-lg-4">
+              <div class="h-100 bg-white box-29291">
+
+
+              </div>
+            </div>
+            <div class="col-lg-8">
+              <div class="">
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+{% endblock %}

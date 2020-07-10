@@ -1,0 +1,134 @@
+{% extends "layout_main.html" %}
+{% import "reports/_macros.html" as macros %}
+{% block content %}
+
+<!-- Main content -->
+  <section class="content">
+      <div class="container-fluid">
+          <!-- Info boxes -->
+          <div class="row">
+              <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                      <h3 class="card-title">
+                        <i class="ion ion-clipboard mr-1"></i> Twitter Tweets
+                      </h3>
+                      <div class="card-tools">
+                        <div class="btn-group" data-toggle="btn-toggle">
+                          <form action="{{ url_for('twitter_report') }}" method="POST">
+                              <input type="hidden" id="click_button_id" name="click_button_id" value="2"/>
+                              <button type="submit" name="all_news" class="btn btn-default btn-sm" id="all_news" onclick="return SetButtonClickValue(2)"><i class="fa fa-square text-gray"></i></button>
+                              <button type="submit" name="pos_news" class="btn btn-default btn-sm" id="pos_news" onclick="return SetButtonClickValue(1)"><i class="fa fa-square text-green"></i></button>
+                              <button type="submit" name="neg_news" class="btn btn-default btn-sm" id="neg_news" onclick="return SetButtonClickValue(0)"><i class="fa fa-square text-red"></i></button>
+                              <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                          </form>
+                       </div>
+                      </div>
+                      <br/><br/>
+                      <div class="card-tools" style="float:left;">
+                          {{ macros.pagination_widget(pages, 'index') }}
+                      </div>
+                    </div>
+                    <div class="card-body">
+                      <ul class="todo-list" data-widget="todo-list" id="tweet_news_section">
+
+                        {% for rows in twitter_news_records %}
+                        {% if rows[4] == 0 %}
+                           <li style="border-color: #dc3545;">
+                        {% else %}
+                           <li style="border-color: #28a745">
+                        {% endif%}
+                           <!-- drag handle -->
+                           <!-- checkbox -->
+                           <div  class="icheck-primary d-inline">
+                             <label for="todoCheck1">@ <span id="screen_id">{{rows[1]}}</span></label>
+                             <label for="todoCheck1">{{rows[2]}}</label>
+                           </div>
+                           <!-- todo text -->
+                           <span class="text">&nbsp;</span>
+                           <!-- Emphasis label -->
+                           {% if rows[4] == 0 %}
+                              <small class="badge badge-danger float-right">{{rows[4]}}</small>
+                           {% else %}
+                              <small class="badge badge-success float-right">{{rows[4]}}</small>
+                           {% endif%}
+
+                           <!-- General tools such as edit or delete-->
+                           <br/>
+                           <div class="icheck-primary d-inline">
+                            {{rows[3]}}
+                           </div>
+                         </li>
+                        {% endfor %}
+
+                        </ul>
+                    </div>
+                    {% if twitter_news_records != null %}
+                       <input type="hidden" name="last_date_id" id="last_date_id" value="{{twitter_news_records[0][2]}}">
+                    {% endif %}
+                </div>
+              </div>
+          </div>
+      </div>
+  </section>
+
+
+ <script>
+
+      function SetButtonClickValue(obj)
+      {
+        $("#click_button_id").val(obj);
+        return true;
+      }
+
+      function check(){
+        last_record_id = $("#last_date_id").val()
+
+        $.ajax({
+            url: '{{ url_for("twitter_report_update") }}',
+    				data: {last_record_id:last_record_id}
+            }).done(function (data) {
+                var html_li_tag = ""
+                for (var i = 0; i < data.json_list.length; i++) {
+
+                  if(data.json_list[i][4] == 0){
+                    html_li_tag = html_li_tag + '<li style="border-color: #dc3545;">'
+                  }
+                  else{
+                    html_li_tag = html_li_tag + '<li style="border-color: #28a745">'
+                  }
+
+                  html_li_tag = html_li_tag + "<div  class='icheck-primary d-inline'>"
+                  html_li_tag = html_li_tag + "<label for='todoCheck1'>@ <span id='screen_id'>" + data.json_list[i][1] +"</span></label>"
+                  html_li_tag = html_li_tag + "<label for='todoCheck1'>" + data.json_list[i][2] + "</label>"
+                  html_li_tag = html_li_tag + "</div>"
+
+                  html_li_tag = html_li_tag + "<span class='text'>&nbsp;</span>"
+
+                  if(data.json_list[i][4] == 0){
+                    html_li_tag = html_li_tag + "<small class='badge badge-danger float-right'> " + data.json_list[i][4] + "</small>"
+                  }
+                  else{
+                    html_li_tag = html_li_tag + "<small class='badge badge-success float-right'> " + data.json_list[i][4] + "</small>"
+                  }
+
+                  html_li_tag = html_li_tag + "<br/>"
+
+                  html_li_tag = html_li_tag + "<div class='icheck-primary d-inline'>"
+                  html_li_tag = html_li_tag + data.json_list[i][3]
+                  html_li_tag = html_li_tag + "</div>"
+
+                  html_li_tag = html_li_tag + "</li>"
+
+                  $('#tweet_news_section li:eq(0)').before(html_li_tag);
+
+                  // set new value
+                  $("#last_date_id").val(data.json_list[i][2])
+                }
+            });
+      };
+
+      setInterval(check,60000);
+ </script>
+
+{% endblock %}
